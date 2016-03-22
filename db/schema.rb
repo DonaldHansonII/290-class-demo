@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160308215535) do
+ActiveRecord::Schema.define(version: 20160322205616) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(version: 20160308215535) do
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
 
+  create_table "categorizations", force: :cascade do |t|
+    t.integer  "post_id"
+    t.integer  "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "categorizations", ["post_id"], name: "index_categorizations_on_post_id"
+  add_index "categorizations", ["tag_id"], name: "index_categorizations_on_tag_id"
+
   create_table "posts", force: :cascade do |t|
     t.string   "title"
     t.string   "string"
@@ -39,6 +49,14 @@ ActiveRecord::Schema.define(version: 20160308215535) do
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id"
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "title",      default: "untitled", null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "tags", ["title"], name: "index_tags_on_title", unique: true
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false

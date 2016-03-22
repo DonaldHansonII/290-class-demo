@@ -21,12 +21,23 @@ class PostsController < ApplicationController
   end
 
   # GET /posts/1/edit
+  # join does the opposite of split
   def edit
+    tag_titles = @post.tags.map {|tag| tag.title }
+    @post.tag_titles = tag_titles.join(',')
   end
 
   # POST /posts
   # POST /posts.json
+
+  
+  
   def create
+    tags = get_tags(post_params[:tag_titles], ',')
+    tags.each do |tag|
+      @post.tags << tag
+    end
+    
     @post = current_user.posts.new(post_params)
     # create posts and add them to the current user collection (current_user)
 
@@ -47,6 +58,12 @@ class PostsController < ApplicationController
   
     return head(:forbidden) unless @post.user == current_user
     # guard clause, make sure the user who is trying to update is the user accessing the method
+    
+    tags = get_tags(post_params[:tag_titles], ',')
+    @post.tags.clear
+    tags.each do |tag|
+      @post.tags << tag
+    end
     
     respond_to do |format|
       if @post.update(post_params)
@@ -72,6 +89,18 @@ class PostsController < ApplicationController
   end
 
   private
+  
+    def get_tags(str, delim)
+      titles = str.split(delim)
+      tags = []
+      titles.each do |title|
+        title.strip!
+        next unless title && title.length # we don't want to add blank tags
+        tags << Tag.where(title: title).first_or_create
+      end
+      return tags
+    end
+  
     # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.find(params[:id])

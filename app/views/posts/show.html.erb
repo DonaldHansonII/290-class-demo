@@ -10,6 +10,15 @@
   <%= @post.string %>
 </p>
 
+<% if @post.tags %>
+  <strong>Tags</strong>
+  <ul>
+  <% @post.tags.each do |tag| %>
+    <li><%= tag.title %></li>
+  <% end %>
+  </ul>
+<% end %>
+
 <p>
   <strong>Body:</strong>
   <%= @post.body %>
