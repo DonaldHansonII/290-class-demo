@@ -32,13 +32,15 @@ class PostsController < ApplicationController
 
   
   
-  def create
+    
+    
+    def create
+    @post = current_user.posts.new(post_params)
     tags = get_tags(post_params[:tag_titles], ',')
     tags.each do |tag|
       @post.tags << tag
     end
     
-    @post = current_user.posts.new(post_params)
     # create posts and add them to the current user collection (current_user)
 
     respond_to do |format|
